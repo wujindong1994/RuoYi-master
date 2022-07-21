@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PersonBaseInfoMapper">
+    <resultMap type="PersonBaseInfo" id="PersonBaseInfoResult">
+        <result property="psId"    column="psId"    />
+        <result property="name"    column="name"    />
+        <result property="sex"    column="sex"    />
+        <result property="phoneNum"    column="phoneNum"    />
+        <result property="jobType"    column="jobType"    />
+        <result property="education"    column="education"    />
+        <result property="universityTime"    column="universityTime"    />
+        <result property="createTime"    column="createTime"    />
+        <result property="upTime"    column="upTime"    />
+        <result property="company"    column="company"    />
+        <result property="projectName"    column="projectName"    />
+    </resultMap>
+
+    <sql id="selectPersonBaseInfoVo">
+        select psId, name, sex, phoneNum, jobType, education, universityTime, company,projectName,createTime, upTime from person_base_info a
+    </sql>
+
+    <select id="selectPersonBaseInfoList" parameterType="PersonBaseInfo" resultMap="PersonBaseInfoResult">
+        <include refid="selectPersonBaseInfoVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="phoneNum != null and phoneNum != '' "> and phoneNum = #{phoneNum}</if>
+            <if test="jobType != null  and jobType != ''"> and jobType = #{jobType}</if>
+            <if test="education != null  and education != ''"> and education = #{education}</if>
+            <if test="universityTime != null  "> and universityTime = #{universityTime}</if>
+            <if test="company != null  and company != '' "> and company like concat('%', #{company}, '%')</if>
+            <if test="projectName != null  and projectName != '' "> and EXISTS (SELECT 1 FROM	project b WHERE a.phoneNum = b.aboutId and b.name like concat('%', #{projectName}, '%'))</if>
+            <if test="province != null  and province != '' "> and EXISTS (SELECT 1 FROM	project b WHERE a.phoneNum = b.aboutId and b.province like concat('%', #{province}, '%'))</if>
+            <if test="createTime != null "> and createTime = #{createTime}</if>
+            <if test="upTime != null "> and upTime = #{upTime}</if>
+        </where>
+        order by createTime desc,name
+    </select>
+    
+    <select id="selectPersonBaseInfoByPsId" parameterType="Long" resultMap="PersonBaseInfoResult">
+        <include refid="selectPersonBaseInfoVo"/>
+        where psId = #{psId}
+    </select>
+
+
+
+        
+    <insert id="insertPersonBaseInfo" parameterType="PersonBaseInfo">
+        insert into person_base_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="psId != null">psId,</if>
+            <if test="name != null">name,</if>
+            <if test="sex != null">sex,</if>
+            <if test="phoneNum != null">phoneNum,</if>
+            <if test="jobType != null">jobType,</if>
+            <if test="education != null">education,</if>
+            <if test="company != null">company,</if>
+            <if test="projectName != null">projectName,</if>
+            <if test="universityTime != null">universityTime,</if>
+            <if test="createTime != null">createTime,</if>
+            <if test="upTime != null">upTime,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="psId != null">#{psId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="phoneNum != null">#{phoneNum},</if>
+            <if test="jobType != null">#{jobType},</if>
+            <if test="education != null">#{education},</if>
+            <if test="company != null">#{company},</if>
+            <if test="projectName != null">#{projectName},</if>
+            <if test="universityTime != null">#{universityTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="upTime != null">#{upTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePersonBaseInfo" parameterType="PersonBaseInfo">
+        update person_base_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="phoneNum != null">phoneNum = #{phoneNum},</if>
+            <if test="jobType != null">jobType = #{jobType},</if>
+            <if test="education != null">education = #{education},</if>
+            <if test="company != null">company = #{company},</if>
+            <if test="projectName != null">projectName = #{projectName},</if>
+            <if test="universityTime != null">universityTime = #{universityTime},</if>
+            <if test="createTime != null">createTime = #{createTime},</if>
+            <if test="upTime != null">upTime = #{upTime},</if>
+        </trim>
+        where psId = #{psId}
+    </update>
+
+    <delete id="deletePersonBaseInfoByPsId" parameterType="Long">
+        delete from person_base_info where psId = #{psId}
+    </delete>
+
+    <delete id="deletePersonBaseInfoByPsIds" parameterType="String">
+        delete from person_base_info where psId in 
+        <foreach item="psId" collection="array" open="(" separator="," close=")">
+            #{psId}
+        </foreach>
+    </delete>
+
+</mapper>

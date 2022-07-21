@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ProjectMapper">
+    
+    <resultMap type="Project" id="ProjectResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="admissionTime"    column="admissionTime"    />
+        <result property="leavTime"    column="leavTime"    />
+        <result property="aboutId"    column="aboutId"    />
+        <result property="groupType"    column="groupType"    />
+        <result property="province"    column="province"    />
+        <result property="createTime"    column="createTime"    />
+        <result property="upTime"    column="upTime"    />
+        <result property="personName"    column="personName"    />
+    </resultMap>
+
+    <sql id="selectProjectVo">
+        select id,personName, name,date_format(itemTime,'%Y-%m-%d') itemTime, date_format(admissionTime,'%Y-%m-%d') admissionTime, date_format(leavTime,'%Y-%m-%d') leavTime, aboutId, groupType, province, createTime, upTime from project
+    </sql>
+
+    <select id="selectProjectList" parameterType="Project" resultMap="ProjectResult">
+        <include refid="selectProjectVo"/>
+        <where>
+            <if test="personName != null  and personName != ''"> and personName like concat('%', #{personName}, '%')</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="admissionTime != null and admissionTime != '' "> and admissionTime = #{admissionTime}</if>
+            <if test="leavTime != null and leavTime != '' "> and leavTime = #{leavTime}</if>
+            <if test="aboutId != null and aboutId != '' "> and aboutId = #{aboutId}</if>
+            <if test="groupType != null  and groupType != ''"> and groupType = #{groupType}</if>
+            <if test="province != null  and province != ''"> and province = #{province}</if>
+            <if test="createTime != null"> and createTime = #{createTime}</if>
+            <if test="upTime != null "> and upTime = #{upTime}</if>
+        </where>
+        order by admissionTime desc
+    </select>
+    
+    <select id="selectProjectById" parameterType="Long" resultMap="ProjectResult">
+        <include refid="selectProjectVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProject" parameterType="Project">
+        insert into project
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="personName != null">personName,</if>
+            <if test="name != null">name,</if>
+            <if test="admissionTime != null and admissionTime != ''">admissionTime,</if>
+            <if test="leavTime != null and leavTime != ''">leavTime,</if>
+            <if test="aboutId != null">aboutId,</if>
+            <if test="groupType != null">groupType,</if>
+            <if test="province != null">province,</if>
+            <if test="createTime != null">createTime,</if>
+            <if test="upTime != null">upTime,</if>
+            <if test="itemTime != null and itemTime != ''">itemTime,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="personName != null">#{personName},</if>
+            <if test="name != null">#{name},</if>
+            <if test="admissionTime != null and admissionTime != ''">STR_TO_DATE(#{admissionTime},'%Y-%m-%d'),</if>
+            <if test="leavTime != null and leavTime != ''">STR_TO_DATE(#{leavTime},'%Y-%m-%d'),</if>
+            <if test="aboutId != null">#{aboutId},</if>
+            <if test="groupType != null">#{groupType},</if>
+            <if test="province != null">#{province},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="upTime != null">#{upTime},</if>
+            <if test="itemTime != null and itemTime != ''">STR_TO_DATE(#{itemTime},'%Y-%m-%d'),</if>
+         </trim>
+    </insert>
+
+    <update id="updateProject" parameterType="Project">
+        update project
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="personName != null">personName = #{personName},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="admissionTime != null and admissionTime != ''">admissionTime = #{admissionTime},</if>
+            <if test="leavTime != null and leavTime != ''">leavTime = #{leavTime},</if>
+            <if test="aboutId != null ">aboutId = #{aboutId},</if>
+            <if test="groupType != null">groupType = #{groupType},</if>
+            <if test="province != null">province = #{province},</if>
+            <if test="createTime != null">createTime = #{createTime},</if>
+            <if test="upTime != null">upTime = #{upTime},</if>
+            <if test="itemTime != null and itemTime != ''">itemTime = #{itemTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProjectById" parameterType="Long">
+        delete from project where id = #{id}
+    </delete>
+
+    <delete id="deleteProjectByIds" parameterType="String">
+        delete from project where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
