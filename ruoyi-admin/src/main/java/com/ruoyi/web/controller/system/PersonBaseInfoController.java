@@ -109,6 +109,7 @@ public class PersonBaseInfoController extends BaseController
     @ResponseBody
     public AjaxResult addSave(PersonBaseInfo personBaseInfo)
     {
+        //新增人员信息
         return toAjax(personBaseInfoService.insertPersonBaseInfo(personBaseInfo));
     }
 
