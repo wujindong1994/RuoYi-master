@@ -119,10 +119,8 @@ public class PersonBaseInfoServiceImpl implements IPersonBaseInfoService
 
         //同步更新项目信息的人员、手机号
         Project project = new Project();
-        personBaseInfos = new PersonBaseInfo();
-        personBaseInfos.setPsId(personBaseInfo.getPsId());
-        List<PersonBaseInfo> personBaseInfoLists = personBaseInfoMapper.selectPersonBaseInfoList(personBaseInfos);
-        project.setAboutId(personBaseInfoLists.get(0).getPhoneNum());
+        PersonBaseInfo personBaseInfoLists = personBaseInfoMapper.selectPersonBaseInfoByPsId(personBaseInfo.getPsId().longValue());
+        project.setAboutId(personBaseInfoLists.getPhoneNum());
         List<Project> projectList =  projectMapper.selectProjectList(project);
         if(projectList.size() > 0 ) {
             for(int i = 0; i < projectList.size(); i++) {
